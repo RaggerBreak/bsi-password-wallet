@@ -3,6 +3,7 @@ package com.raggerbreak.bsipasswordwalletbe.wallet.web;
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
 import com.raggerbreak.bsipasswordwalletbe.wallet.service.WalletService;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.CreatePasswordResponse;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.PasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class WalletController {
         return CreatePasswordResponse.builder()
                 .walletPasswordId(walletService.addPassword(walletPasswordDTO).getId())
                 .build();
+    }
+
+    @GetMapping("/password/{passwordId}")
+    public PasswordResponse decodePassword(@PathVariable Long passwordId) throws Exception {
+        return walletService.decodePassword(passwordId);
     }
 }

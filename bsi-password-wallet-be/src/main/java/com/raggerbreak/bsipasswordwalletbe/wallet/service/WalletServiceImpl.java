@@ -5,6 +5,8 @@ import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
 import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
 import com.raggerbreak.bsipasswordwalletbe.wallet.repository.WalletPasswordRepository;
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.PasswordResponse;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -35,7 +37,19 @@ public class WalletServiceImpl implements WalletService {
                 .login(dto.getLogin())
                 .description(dto.getDescription())
                 .password(cryptoService.encrypt(dto.getPassword(), getCurrentAuthUser()))
+                .user(getCurrentAuthUser())
                 .build());
+    }
+
+    @Override
+    public PasswordResponse decodePassword(Long passwordId) throws Exception {
+        User user = getCurrentAuthUser();
+        WalletPassword walletPassword = walletPasswordRepository.findByIdAndUserId(passwordId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Password Not Found"));
+
+        return PasswordResponse.builder()
+                .password(cryptoService.decrypt(walletPassword.getPassword(), user))
+                .build();
     }
 
     private User getCurrentAuthUser() {

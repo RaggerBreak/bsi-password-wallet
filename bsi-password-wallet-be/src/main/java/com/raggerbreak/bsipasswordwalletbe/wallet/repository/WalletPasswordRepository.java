@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WalletPasswordRepository extends JpaRepository<WalletPassword, Long> {
 
@@ -14,4 +15,6 @@ public interface WalletPasswordRepository extends JpaRepository<WalletPassword, 
             "from WalletPassword wp " +
             "where wp.user.username = :username")
     List<WalletPasswordDTO> findAllByUsername(String username);
+
+    Optional<WalletPassword> findByIdAndUserId(Long passwordId, Long userId);
 }
