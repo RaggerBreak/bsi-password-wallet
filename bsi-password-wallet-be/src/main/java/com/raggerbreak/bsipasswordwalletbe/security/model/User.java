@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.model;
 
+import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordForm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,8 +34,15 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 120)
     private String password;
+
+    @NotBlank
+    private String walletPassword;
+
+    private String salt;
+
+    @Enumerated(EnumType.STRING)
+    private PasswordForm passwordForm;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

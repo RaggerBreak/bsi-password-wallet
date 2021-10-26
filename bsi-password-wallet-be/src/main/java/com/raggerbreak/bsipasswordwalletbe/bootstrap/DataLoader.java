@@ -8,6 +8,7 @@ import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +26,9 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         loadRoles();
-        loadUsers();
+//        loadUsers();
     }
 
     public void loadRoles() {
@@ -46,6 +47,7 @@ public class DataLoader implements CommandLineRunner {
                 .username("user")
                 .email("user@email.com")
                 .password(passwordEncoder.encode("123456"))
+                .salt(BCrypt.gensalt())
                 .roles(roles)
                 .build());
 
@@ -56,6 +58,7 @@ public class DataLoader implements CommandLineRunner {
                 .username("admin")
                 .email("admin@email.com")
                 .password(passwordEncoder.encode("123456"))
+                .salt(BCrypt.gensalt())
                 .roles(roles)
                 .build());
 
@@ -66,6 +69,7 @@ public class DataLoader implements CommandLineRunner {
                 .username("all")
                 .email("all@email.com")
                 .password(passwordEncoder.encode("123456"))
+                .salt(BCrypt.gensalt())
                 .roles(roles)
                 .build());
     }
