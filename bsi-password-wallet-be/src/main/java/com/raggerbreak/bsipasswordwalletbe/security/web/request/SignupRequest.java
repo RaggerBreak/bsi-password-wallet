@@ -1,6 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.web.request;
 
-import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordForm;
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordForm;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

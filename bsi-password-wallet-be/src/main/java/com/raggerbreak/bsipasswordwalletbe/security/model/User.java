@@ -1,6 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.model;
 
-import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordForm;
+import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,4 +49,7 @@ public class User {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<WalletPassword> walletPasswords;
 }

@@ -1,6 +1,7 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet;
 
 
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordForm;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
