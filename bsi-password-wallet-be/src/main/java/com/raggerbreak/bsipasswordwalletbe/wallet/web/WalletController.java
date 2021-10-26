@@ -2,13 +2,12 @@ package com.raggerbreak.bsipasswordwalletbe.wallet.web;
 
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
 import com.raggerbreak.bsipasswordwalletbe.wallet.service.WalletService;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.CreatePasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -24,5 +23,12 @@ public class WalletController {
     @GetMapping
     public List<WalletPasswordDTO> getAllWalletPasswords(Principal principal) {
         return walletService.getAllWalletPasswords(principal.getName());
+    }
+
+    @PostMapping
+    public CreatePasswordResponse addWalletPassword(@Valid @RequestBody WalletPasswordDTO walletPasswordDTO) throws Exception  {
+        return CreatePasswordResponse.builder()
+                .walletPasswordId(walletService.addPassword(walletPasswordDTO).getId())
+                .build();
     }
 }

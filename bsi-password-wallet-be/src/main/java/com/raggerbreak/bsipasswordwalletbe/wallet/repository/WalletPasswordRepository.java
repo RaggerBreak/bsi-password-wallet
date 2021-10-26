@@ -10,7 +10,7 @@ import java.util.List;
 public interface WalletPasswordRepository extends JpaRepository<WalletPassword, Long> {
 
     @Query("select new com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO(" +
-            "wp.id, wp.name, wp.login, wp.description) " +
+            "wp.id, wp.name, wp.login, wp.description, wp.password) " +
             "from WalletPassword wp " +
             "where wp.user.username = :username")
     List<WalletPasswordDTO> findAllByUsername(String username);

@@ -16,4 +16,5 @@ public class WalletPasswordDTO implements Serializable {
     private String name;
     private String login;
     private String description;
+    private String password;
 }
