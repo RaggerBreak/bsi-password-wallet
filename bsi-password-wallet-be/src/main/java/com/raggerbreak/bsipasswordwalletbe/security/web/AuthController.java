@@ -1,11 +1,8 @@
 package com.raggerbreak.bsipasswordwalletbe.security.web;
 
 import com.raggerbreak.bsipasswordwalletbe.security.jwt.JwtUtils;
-import com.raggerbreak.bsipasswordwalletbe.security.model.ERole;
-import com.raggerbreak.bsipasswordwalletbe.security.model.Role;
-import com.raggerbreak.bsipasswordwalletbe.security.model.User;
-import com.raggerbreak.bsipasswordwalletbe.security.repository.RoleRepository;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
+import com.raggerbreak.bsipasswordwalletbe.security.service.AuthService;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserDetailsImpl;
 import com.raggerbreak.bsipasswordwalletbe.security.web.request.LoginRequest;
 import com.raggerbreak.bsipasswordwalletbe.security.web.request.SignupRequest;
@@ -18,14 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -37,8 +31,8 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
+
     private final JwtUtils jwtUtils;
 
     @PostMapping("/signin")
@@ -79,36 +73,7 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        // Create new user's account
-        User user = User.builder()
-                .username(signupRequest.getUsername())
-                .email(signupRequest.getEmail())
-                .password(passwordEncoder.encode(signupRequest.getPassword()))
-                .build();
-
-        Set<String> strRoles = signupRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        if (Objects.isNull(strRoles)) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                if ("admin".equals(role)) {
-                    Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    roles.add(adminRole);
-                } else {
-                    Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    roles.add(userRole);
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userRepository.save(user);
+        authService.createUser(signupRequest);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
