@@ -11,11 +11,13 @@ export class RegisterComponent implements OnInit {
   form: any = {
     username: null,
     email: null,
-    password: null
+    password: null,
+    passwordForm: null
   };
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  passwordForms: string[] = ['SHA512', 'HMAC'];
 
   constructor(private authService: AuthService) { }
 
@@ -23,9 +25,9 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const { username, email, password } = this.form;
+    const { username, email, password, passwordForm } = this.form;
 
-    this.authService.register(username, email, password).subscribe(data => {
+    this.authService.register(username, email, password, passwordForm).subscribe(data => {
         this.isSuccessful = true;
         this.isSignUpFailed = false;
       },

@@ -63,14 +63,25 @@
             name="password"
             [(ngModel)]="form.password"
             required
-            minlength="6"
             #password="ngModel"
           />
           <div class="alert-danger" *ngIf="password.errors && f.submitted">
             <div *ngIf="password.errors.required">Password is required</div>
-            <div *ngIf="password.errors.minlength">
-              Password must be at least 6 characters
-            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="passwordForm">Password form</label>
+          <select
+            required
+            name="passwordForm"
+            #passwordForm="ngModel"
+            [(ngModel)]="form.passwordForm">
+            <option *ngFor="let passwdForm of passwordForms" [ngValue]="passwdForm">
+              {{passwdForm}}
+            </option>
+          </select>
+          <div class="alert-danger" *ngIf="passwordForm.errors && f.submitted">
+            <div *ngIf="passwordForm.errors.required">Password form is required</div>
           </div>
         </div>
         <div class="form-group">

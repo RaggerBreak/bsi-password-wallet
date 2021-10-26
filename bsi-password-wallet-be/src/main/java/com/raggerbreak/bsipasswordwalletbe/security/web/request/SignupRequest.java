@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.web.request;
 
+import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordForm;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -22,6 +23,7 @@ public class SignupRequest {
     private Set<String> role;
 
     @NotBlank
-    @Size(min = 6, max = 40)
     private String password;
+
+    private PasswordForm passwordForm;
 }
