@@ -19,6 +19,10 @@ export class WalletPasswordService {
   getRawPassword(passwordId: number): Observable<PasswordResponse> {
     return this.httpClient.get<PasswordResponse>(API_URL + `password/${passwordId}`)
   }
+
+  deletePassword(passwordId: number) {
+    return this.httpClient.delete(API_URL + `password/${passwordId}`);
+  }
 }
 
 interface PasswordResponse {

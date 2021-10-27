@@ -12,5 +12,6 @@ public interface WalletService {
     List<WalletPasswordDTO> getAllWalletPasswords(String username);
     WalletPassword addPassword(WalletPasswordDTO walletPasswordDTO) throws Exception ;
     PasswordResponse decodePassword(Long passwordId) throws Exception;
+    void deletePassword(Long passwordId) throws Exception;
     void onChangeUserPassword(String oldWalletPassword, User newUser) throws Exception;
 }

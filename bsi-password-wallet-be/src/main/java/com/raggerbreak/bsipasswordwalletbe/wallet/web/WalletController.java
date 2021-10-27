@@ -39,4 +39,10 @@ public class WalletController {
     public PasswordResponse decodePassword(@PathVariable Long passwordId) throws Exception {
         return walletService.decodePassword(passwordId);
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/password/{passwordId}")
+    public void deletePassword(@PathVariable Long passwordId) throws Exception {
+         walletService.deletePassword(passwordId);
+    }
 }

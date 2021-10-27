@@ -48,6 +48,15 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public void deletePassword(Long passwordId) throws Exception {
+        User user = userService.getCurrentAuthUser();
+        WalletPassword walletPassword = walletPasswordRepository.findByIdAndUserId(passwordId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Password Not Found"));
+
+        walletPasswordRepository.deleteById(passwordId);
+    }
+
+    @Override
     public void onChangeUserPassword(String oldWalletPassword, User user) throws Exception {
 
         List<WalletPassword> walletPasswords = walletPasswordRepository.findAllByUserId(user.getId());

@@ -32,6 +32,13 @@ export class PasswordListComponent implements OnInit {
       modalRef.componentInstance.password = data.password;
     });
   }
+
+  onClickDelete(passwordId: number): void {
+    this.walletPasswordService.deletePassword(passwordId).subscribe((result) => {
+      this.ngOnInit();
+    });
+  }
+
 }
 
 @Component({
