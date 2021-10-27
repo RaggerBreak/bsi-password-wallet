@@ -13,7 +13,9 @@ import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 
 import { authInterceptorProviders } from './_helpers/auth-interceptor';
-import { PasswordListComponent } from './_components/password-list/password-list.component';
+import {NgbdModalContent, PasswordListComponent} from './_components/password-list/password-list.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -24,13 +26,16 @@ import { PasswordListComponent } from './_components/password-list/password-list
     LoginComponent,
     ProfileComponent,
     RegisterComponent,
-    PasswordListComponent
+    PasswordListComponent,
+    NgbdModalContent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
+    NoopAnimationsModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]

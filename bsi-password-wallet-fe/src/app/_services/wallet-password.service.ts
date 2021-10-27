@@ -15,4 +15,13 @@ export class WalletPasswordService {
   getWalletPasswords(): Observable<WalletPassword[]> {
     return this.httpClient.get<WalletPassword[]>(API_URL);
   }
+
+  getRawPassword(passwordId: number): Observable<PasswordResponse> {
+    return this.httpClient.get<PasswordResponse>(API_URL + `password/${passwordId}`)
+  }
 }
+
+interface PasswordResponse {
+  password: string
+}
+
