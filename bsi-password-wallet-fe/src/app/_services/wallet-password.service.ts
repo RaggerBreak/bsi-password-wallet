@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {WalletPassword} from "../_common/wallet-password";
 
 const API_URL = 'http://localhost:8080/api/wallet/';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +26,15 @@ export class WalletPasswordService {
 
   deletePassword(passwordId: number) {
     return this.httpClient.delete(API_URL + `password/${passwordId}`);
+  }
+
+  addPassword(name: string, login: string, description: string, password: string): Observable<any> {
+    return this.httpClient.post(API_URL, {
+      name,
+      login,
+      description,
+      password
+    }, httpOptions);
   }
 }
 

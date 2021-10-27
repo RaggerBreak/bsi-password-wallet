@@ -10,12 +10,23 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PasswordListComponent implements OnInit {
 
+  formNewPassword: any = {
+    name: null,
+    login: null,
+    description: null,
+    password: null
+  };
+
   walletPasswords: WalletPassword[] = [];
 
   constructor(private walletPasswordService: WalletPasswordService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.listWalletPasswords();
+    this.formNewPassword.name = null;
+    this.formNewPassword.login = null;
+    this.formNewPassword.description = null;
+    this.formNewPassword.password = null;
   }
 
   listWalletPasswords(): void {
@@ -39,6 +50,13 @@ export class PasswordListComponent implements OnInit {
     });
   }
 
+  onClickNewPassword(): void {
+    const { name, login, description, password } = this.formNewPassword;
+    this.walletPasswordService.addPassword(name, login, description, password).subscribe(data => {
+      this.ngOnInit();
+    })
+  }
+
 }
 
 @Component({
@@ -51,7 +69,7 @@ export class PasswordListComponent implements OnInit {
       </button>
     </div>
     <div class="modal-body">
-      <p>{{password}}!</p>
+      <p>{{password}}</p>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
