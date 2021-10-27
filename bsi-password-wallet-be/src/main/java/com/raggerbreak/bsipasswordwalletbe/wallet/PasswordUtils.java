@@ -18,7 +18,7 @@ public final class PasswordUtils {
     public static String encode(User user) {
 
         if (!Objects.isNull(user.getPasswordForm()) && user.getPasswordForm().equals(PasswordForm.SHA512))
-            return calculateSHA512(user.getPassword(), user.getPassword());
+            return calculateSHA512(user.getPassword(), user.getSalt());
 
         if (user.getPasswordForm().equals(PasswordForm.HMAC))
             return calculateHMAC(user.getPassword(), user.getPassword());

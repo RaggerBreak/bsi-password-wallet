@@ -26,6 +26,7 @@ public class WalletController {
         return walletService.getAllWalletPasswords(principal.getName());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public CreatePasswordResponse addWalletPassword(@Valid @RequestBody WalletPasswordDTO walletPasswordDTO) throws Exception  {
         return CreatePasswordResponse.builder()
@@ -33,6 +34,7 @@ public class WalletController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/password/{passwordId}")
     public PasswordResponse decodePassword(@PathVariable Long passwordId) throws Exception {
         return walletService.decodePassword(passwordId);

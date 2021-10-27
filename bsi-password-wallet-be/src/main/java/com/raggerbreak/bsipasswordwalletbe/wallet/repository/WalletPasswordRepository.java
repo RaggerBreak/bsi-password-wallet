@@ -16,5 +16,7 @@ public interface WalletPasswordRepository extends JpaRepository<WalletPassword, 
             "where wp.user.username = :username")
     List<WalletPasswordDTO> findAllByUsername(String username);
 
+    List<WalletPassword> findAllByUserId(Long id);
+
     Optional<WalletPassword> findByIdAndUserId(Long passwordId, Long userId);
 }

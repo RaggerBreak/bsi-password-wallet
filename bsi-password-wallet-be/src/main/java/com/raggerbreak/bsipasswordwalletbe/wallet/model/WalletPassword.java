@@ -24,7 +24,7 @@ public class WalletPassword {
     private String description;
     private String password;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -1,9 +1,8 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet.service;
 
-import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 
 public interface CryptoService {
 
-    String encrypt(String password, User user) throws Exception;
-    String decrypt(String password, User user) throws Exception;
+    String encrypt(String password, String walletPassword) throws Exception;
+    String decrypt(String password, String walletPassword) throws Exception;
 }

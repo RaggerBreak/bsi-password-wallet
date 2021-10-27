@@ -7,8 +7,6 @@ import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.RoleRepository;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
 import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordUtils;
-import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
-import com.raggerbreak.bsipasswordwalletbe.wallet.repository.WalletPasswordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,7 +23,6 @@ public class DataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final WalletPasswordRepository walletPasswordRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -55,20 +52,6 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .build();
         user.setWalletPassword(PasswordUtils.encode(user));
-        User savedUser = userRepository.save(user);
-
-        Set<WalletPassword> walletPasswords = new HashSet<>();
-        walletPasswords.add(WalletPassword.builder()
-                .login("login1")
-                .password("password1")
-                        .user(savedUser)
-                .build());
-        walletPasswords.add(WalletPassword.builder()
-                .login("login2")
-                .password("password2")
-                .user(savedUser)
-                .build());
-        walletPasswordRepository.saveAll(walletPasswords);
 
         roles = new HashSet<>();
         roles.add(roleRepository.findByName(ERole.ROLE_ADMIN).orElse(null));

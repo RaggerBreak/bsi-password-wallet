@@ -1,6 +1,5 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet.service;
 
-import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
@@ -16,17 +15,17 @@ public class CryptoServiceImpl implements CryptoService {
     private static final String ALGO = "AES";
 
     @Override
-    public String encrypt(String password, User user) throws Exception {
+    public String encrypt(String password, String walletPassword) throws Exception {
         Cipher c = Cipher.getInstance(ALGO);
-        c.init(Cipher.ENCRYPT_MODE, generateKey(user.getWalletPassword()));
+        c.init(Cipher.ENCRYPT_MODE, generateKey(walletPassword));
         byte[] encVal = c.doFinal(password.getBytes());
         return Base64.getEncoder().encodeToString(encVal);
     }
 
     @Override
-    public String decrypt(String password, User user) throws Exception {
+    public String decrypt(String password, String walletPassword) throws Exception {
         Cipher c = Cipher.getInstance(ALGO);
-        c.init(Cipher.DECRYPT_MODE, generateKey(user.getWalletPassword()));
+        c.init(Cipher.DECRYPT_MODE, generateKey(walletPassword));
         byte[] decodedValue = Base64.getDecoder().decode(password);
         byte[] decValue = c.doFinal(decodedValue);
         return new String(decValue);
