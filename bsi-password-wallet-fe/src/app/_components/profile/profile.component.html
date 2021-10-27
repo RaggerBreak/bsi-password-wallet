@@ -21,6 +21,39 @@
   </ul>
 </div>
 
+<br><h3>Change password</h3><br>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Current password</th>
+    <th scope="col">New password</th>
+    <th scope="col">Password form</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>
+      <input type="password" class="form-control" name="oldPassword" [(ngModel)]="formChangePassword.oldPassword" required #oldPassword="ngModel"/>
+    </td>
+    <td>
+      <input type="password" class="form-control" name="newPassword" [(ngModel)]="formChangePassword.newPassword" required #newPassword="ngModel"/>
+    </td>
+    <td>
+      <select required name="passwordForm" #passwordForm="ngModel" [(ngModel)]="formChangePassword.passwordForm">
+        <option *ngFor="let passwdForm of passwordForms" [ngValue]="passwdForm">
+          {{passwdForm}}
+        </option>
+      </select>
+    </td>
+    <td>
+      <button (click)="onClickChangePassword()" type="button" class="btn"><i class="far fa-share-square"></i></button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
 <ng-template #loggedOut>
   Please login.
 </ng-template>
