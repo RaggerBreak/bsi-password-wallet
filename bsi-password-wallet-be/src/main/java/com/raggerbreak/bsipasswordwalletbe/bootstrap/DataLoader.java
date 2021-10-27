@@ -52,6 +52,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .build();
         user.setWalletPassword(PasswordUtils.encode(user));
+        userRepository.save(user);
 
         roles = new HashSet<>();
         roles.add(roleRepository.findByName(ERole.ROLE_ADMIN).orElse(null));
