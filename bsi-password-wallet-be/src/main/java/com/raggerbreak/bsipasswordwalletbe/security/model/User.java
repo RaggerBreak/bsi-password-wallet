@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.model;
 
+import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.LoginAttempt;
 import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
