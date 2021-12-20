@@ -24,4 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
 
     }
+
+    public boolean userExistsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
 }

@@ -12,7 +12,6 @@ import com.raggerbreak.bsipasswordwalletbe.security.web.response.JwtResponse;
 import com.raggerbreak.bsipasswordwalletbe.security.web.response.MessageResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     private final JwtUtils jwtUtils;
 
@@ -64,11 +64,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MessageResponse signup(SignupRequest signupRequest) {
 
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+        if (userDetailsServiceImpl.userExistsByUsername(signupRequest.getUsername())) {
             return new MessageResponse("Error: Username is already in use!", true);
         }
 
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+        if (userDetailsServiceImpl.userExistsByUsername(signupRequest.getEmail())) {
             return new MessageResponse("Error: Email is already in use!", true);
         }
 
