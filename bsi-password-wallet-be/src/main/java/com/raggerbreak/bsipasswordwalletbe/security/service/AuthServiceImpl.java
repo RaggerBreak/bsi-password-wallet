@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.service;
 
+import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.IpAddressLockService;
 import com.raggerbreak.bsipasswordwalletbe.security.jwt.JwtUtils;
 import com.raggerbreak.bsipasswordwalletbe.security.model.ERole;
 import com.raggerbreak.bsipasswordwalletbe.security.model.Role;
@@ -12,6 +13,7 @@ import com.raggerbreak.bsipasswordwalletbe.security.web.response.JwtResponse;
 import com.raggerbreak.bsipasswordwalletbe.security.web.response.MessageResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,19 +32,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final HttpServletRequest request;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final IpAddressLockService ipAddressLockService;
 
     private final JwtUtils jwtUtils;
 
     @Override
     public JwtResponse signin(LoginRequest loginRequest) {
         userService.checkIfLockTimeExpiredThenUnlockAccount(loginRequest.getUsername());
+        ipAddressLockService.checkIfLockedDependsOnStatus(request.getRemoteAddr(), loginRequest.getUsername());
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 

@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.loginattempts.listener;
 
+import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.IpAddressLockService;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class AuthenticationSuccessEventListener implements ApplicationListener<A
 
     private final HttpServletRequest request;
     private final LoginAttemptService loginAttemptService;
+    private final IpAddressLockService ipAddressLockService;
 
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
@@ -24,8 +26,10 @@ public class AuthenticationSuccessEventListener implements ApplicationListener<A
         final String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader == null) {
             loginAttemptService.loginSucceeded(request.getRemoteAddr(), event.getAuthentication().getName());
+            ipAddressLockService.loginSucceeded(request.getRemoteAddr(), event.getAuthentication().getName());
         } else {
             loginAttemptService.loginSucceeded(xfHeader.split(",")[0], event.getAuthentication().getName());
+            ipAddressLockService.loginSucceeded(xfHeader.split(",")[0], event.getAuthentication().getName());
         }
     }
 }
