@@ -79,14 +79,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void incrementNumberOfFailedLoginAttemptsAndLockAccount(String username) {
+    public User incrementNumberOfFailedLoginAttemptsAndLockAccount(String username) {
         log.debug("UserServiceImpl: incrementNumberOfFailedLoginAttemptsAndLockAccount");
         User user = getUserByUsername(username);
 
         Integer numberOfFailedLoginAttempts = Optional.ofNullable(user.getNumberOfFailedLoginAttempts()).orElse(0);
-        if (numberOfFailedLoginAttempts < MAX_FAILED_ATTEMPTS) {
-            numberOfFailedLoginAttempts++;
-        }
+        numberOfFailedLoginAttempts++;
         user.setNumberOfFailedLoginAttempts(numberOfFailedLoginAttempts);
 
         switch (numberOfFailedLoginAttempts) {
@@ -103,7 +101,7 @@ public class UserServiceImpl implements UserService {
                 user.setLockTime(new Date(new Date().getTime() + TWO_MIN_IN_MILLIS));
                 break;
         }
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

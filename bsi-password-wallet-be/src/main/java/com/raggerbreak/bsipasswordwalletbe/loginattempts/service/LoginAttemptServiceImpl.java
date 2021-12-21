@@ -5,6 +5,7 @@ import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.ELoginAttemptResu
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.LoginAttempt;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.repository.LoginAttemptRepository;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.web.response.LastLoginAttemptsLogsResponse;
+import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     private final UserService userService;
 
     @Override
-    public void loginFailed(String remoteAddr, String username) {
+    public User loginFailed(String remoteAddr, String username) {
         log.debug("LoginAttemptServiceImpl: loginFailed");
         if (userService.userExistsByUsername(username)) {
             loginAttemptRepository.save(LoginAttempt.builder()
@@ -29,7 +30,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
                     .username(username)
                     .build());
         }
-        userService.incrementNumberOfFailedLoginAttemptsAndLockAccount(username);
+        return userService.incrementNumberOfFailedLoginAttemptsAndLockAccount(username);
     }
 
     @Override

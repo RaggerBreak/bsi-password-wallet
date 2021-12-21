@@ -1,17 +1,18 @@
 package com.raggerbreak.bsipasswordwalletbe.loginattempts.service;
 
+import com.raggerbreak.bsipasswordwalletbe.exceptions.IpLockedException;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.dto.IpAddressLockDTO;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.IpAddressLock;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.repository.IpAddressLockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.raggerbreak.bsipasswordwalletbe.loginattempts.model.EIpAddressLockStatus.*;
 
@@ -76,16 +77,20 @@ public class IpAddressLockServiceImpl implements IpAddressLockService {
         if (Objects.nonNull(ipAddressLock) && Objects.nonNull(ipAddressLock.getLockedStatus())) {
             switch (ipAddressLock.getLockedStatus()) {
                 case PERMANENTLY_LOCKED:
-                    throw new AuthenticationServiceException("IP PERMANENTLY_LOCKED");
+                    throw new IpLockedException("IP is permanently locked");
                 case OPEN:
-                    return true;
+                    return false;
                 case LOCKED:
                     if (Objects.nonNull(ipAddressLock.getLockTime()) && ipAddressLock.getLockTime().getTime() < new Date().getTime()) {
                         ipAddressLock.setLockedStatus(OPEN);
                         ipAddressLockRepository.save(ipAddressLock);
-                        return true;
-                    } else {
-                        throw new AuthenticationServiceException("IP LOCKED");
+
+                        long millis = new Date().getTime() - ipAddressLock.getLockTime().getTime();
+                        throw new IpLockedException("IP is locked. Please try again in " + String.format("%d min, %d sec",
+                                TimeUnit.MILLISECONDS.toMinutes(millis),
+                                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                        ));
                     }
             }
         }
