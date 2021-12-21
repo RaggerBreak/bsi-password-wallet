@@ -35,12 +35,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserService userService;
 
     private final JwtUtils jwtUtils;
 
     @Override
     public JwtResponse signin(LoginRequest loginRequest) {
+        userService.checkIfLockTimeExpiredThenUnlockAccount(loginRequest.getUsername());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -64,11 +65,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MessageResponse signup(SignupRequest signupRequest) {
 
-        if (userDetailsServiceImpl.userExistsByUsername(signupRequest.getUsername())) {
+        if (userService.userExistsByUsername(signupRequest.getUsername())) {
             return new MessageResponse("Error: Username is already in use!", true);
         }
 
-        if (userDetailsServiceImpl.userExistsByUsername(signupRequest.getEmail())) {
+        if (userService.userExistsByUsername(signupRequest.getEmail())) {
             return new MessageResponse("Error: Email is already in use!", true);
         }
 
@@ -85,6 +86,8 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .passwordForm(signupRequest.getPasswordForm())
                 .salt(BCrypt.gensalt())
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
                 .build();
 
         user.setWalletPassword(PasswordUtils.encode(user));

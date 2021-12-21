@@ -5,42 +5,49 @@ import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.ELoginAttemptResu
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.LoginAttempt;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.repository.LoginAttemptRepository;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.web.response.LastLoginAttemptsLogsResponse;
-import com.raggerbreak.bsipasswordwalletbe.security.service.UserDetailsServiceImpl;
+import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoginAttemptServiceImpl implements LoginAttemptService {
 
     private final LoginAttemptRepository loginAttemptRepository;
     private final LoginAttemptMapper loginAttemptMapper;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserService userService;
 
     @Override
     public void loginFailed(String remoteAddr, String username) {
-        if (userDetailsServiceImpl.userExistsByUsername(username)) {
+        log.debug("LoginAttemptServiceImpl: loginFailed");
+        if (userService.userExistsByUsername(username)) {
             loginAttemptRepository.save(LoginAttempt.builder()
                     .ip(remoteAddr)
                     .result(ELoginAttemptResult.FAILED)
                     .username(username)
                     .build());
         }
+        userService.incrementNumberOfFailedLoginAttemptsAndLockAccount(username);
     }
 
     @Override
     public void loginSucceeded(String remoteAddr, String username) {
-        if (userDetailsServiceImpl.userExistsByUsername(username)) {
+        log.debug("LoginAttemptServiceImpl: loginSucceeded");
+        if (userService.userExistsByUsername(username)) {
             loginAttemptRepository.save(LoginAttempt.builder()
                     .ip(remoteAddr)
                     .result(ELoginAttemptResult.SUCCESSFUL)
                     .username(username)
                     .build());
         }
+        userService.resetNumberOfFailedLoginAttempts(username);
     }
 
     @Override
     public LastLoginAttemptsLogsResponse getLastLoginAttemptsLogs(String username) {
+        log.debug("LoginAttemptServiceImpl: getLastLoginAttemptsLogs for username" + username);
         return LastLoginAttemptsLogsResponse.builder()
                 .lastFailedLoginAttempt(loginAttemptMapper.loginAttemptToDto(loginAttemptRepository
                         .getFirstByUsernameAndResultOrderByTimestampDesc(username, ELoginAttemptResult.FAILED)))

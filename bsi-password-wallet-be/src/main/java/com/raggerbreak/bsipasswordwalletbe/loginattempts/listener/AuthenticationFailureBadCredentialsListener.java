@@ -4,7 +4,7 @@ import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.LoginAttemptSer
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,20 +12,20 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent>  {
+public class AuthenticationFailureBadCredentialsListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
     private final HttpServletRequest request;
     private final LoginAttemptService loginAttemptService;
 
     @Override
-    public void onApplicationEvent(AuthenticationSuccessEvent event) {
-        log.debug("Handling AuthenticationSuccessEvent");
-
+    public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
+        log.debug("Handling AuthenticationFailureBadCredentialsEvent");
         final String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader == null) {
-            loginAttemptService.loginSucceeded(request.getRemoteAddr(), event.getAuthentication().getName());
+            loginAttemptService.loginFailed(request.getRemoteAddr(), event.getAuthentication().getName());
         } else {
-            loginAttemptService.loginSucceeded(xfHeader.split(",")[0], event.getAuthentication().getName());
+            loginAttemptService.loginFailed(xfHeader.split(",")[0], event.getAuthentication().getName());
         }
     }
 }
+

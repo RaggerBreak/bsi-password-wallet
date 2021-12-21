@@ -2,27 +2,33 @@ package com.raggerbreak.bsipasswordwalletbe.loginattempts.listener;
 
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AuthenticationFailureLockedEvent;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Component
 @RequiredArgsConstructor
-public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
+@Slf4j
+public class AuthenticationFailureLockedListener implements ApplicationListener<AuthenticationFailureLockedEvent> {
 
     private final HttpServletRequest request;
     private final LoginAttemptService loginAttemptService;
 
     @Override
-    public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
+    public void onApplicationEvent(AuthenticationFailureLockedEvent event) {
+        log.debug("Handling AuthenticationFailureLockedEvent");
+
         final String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader == null) {
             loginAttemptService.loginFailed(request.getRemoteAddr(), event.getAuthentication().getName());
         } else {
             loginAttemptService.loginFailed(xfHeader.split(",")[0], event.getAuthentication().getName());
         }
+        
+
+
     }
 }
-

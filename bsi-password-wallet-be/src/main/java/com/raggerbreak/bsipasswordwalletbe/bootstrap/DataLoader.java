@@ -39,7 +39,6 @@ public class DataLoader implements CommandLineRunner {
     }
 
     public void loadUsers() {
-
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName(ERole.ROLE_USER).orElse(null));
 
@@ -50,6 +49,8 @@ public class DataLoader implements CommandLineRunner {
                 .passwordForm(PasswordForm.SHA512)
                 .salt(BCrypt.gensalt())
                 .roles(roles)
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
                 .build();
         user.setWalletPassword(PasswordUtils.encode(user));
         userRepository.save(user);
@@ -63,6 +64,8 @@ public class DataLoader implements CommandLineRunner {
                 .passwordForm(PasswordForm.SHA512)
                 .salt(BCrypt.gensalt())
                 .roles(roles)
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
                 .build();
         admin.setWalletPassword(PasswordUtils.encode(admin));
         userRepository.save(admin);
@@ -77,6 +80,8 @@ public class DataLoader implements CommandLineRunner {
                 .passwordForm(PasswordForm.SHA512)
                 .salt(BCrypt.gensalt())
                 .roles(roles)
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
                 .build();
         all.setWalletPassword(PasswordUtils.encode(all));
         userRepository.save(all);

@@ -7,4 +7,8 @@ import com.raggerbreak.bsipasswordwalletbe.security.web.response.MessageResponse
 public interface UserService {
     MessageResponse changePassword(ChangeUserPasswordRequest request) throws Exception;
     User getCurrentAuthUser();
+    boolean userExistsByUsername(String username);
+    void incrementNumberOfFailedLoginAttemptsAndLockAccount(String username);
+    void resetNumberOfFailedLoginAttempts(String username);
+    boolean checkIfLockTimeExpiredThenUnlockAccount(String username);
 }

@@ -1,6 +1,5 @@
 package com.raggerbreak.bsipasswordwalletbe.security.model;
 
-import com.raggerbreak.bsipasswordwalletbe.loginattempts.model.LoginAttempt;
 import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +44,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private PasswordForm passwordForm;
+
+    private Integer numberOfFailedLoginAttempts;
+
+    private boolean locked;
+
+    private Date lockTime;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
