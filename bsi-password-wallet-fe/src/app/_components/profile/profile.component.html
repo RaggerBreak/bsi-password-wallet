@@ -54,6 +54,48 @@
   </tbody>
 </table>
 
+<br><h3>Last logins</h3><br>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">successful</th>
+    <th scope="col">unsuccessful</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>
+      <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.ip }}
+    <br>
+      <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.timestamp }}
+    </td>
+    <td>
+      <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.ip }}
+      <br>
+      <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.timestamp }}
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<br><h3>Permanently Locked IP</h3><br>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">IP</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let ipAddressLock of permanentlyLockedIps">
+    <td>{{ipAddressLock.ip}}</td>
+    <td>
+      <button (click)="onClickDeletePermanentlyLockedIp(ipAddressLock.id)" type="button" class="btn px-3"><i class="fas fa-trash-alt"></i></button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
 <ng-template #loggedOut>
   Please login.
 </ng-template>
