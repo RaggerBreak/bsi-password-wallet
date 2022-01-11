@@ -16,6 +16,7 @@ public interface WalletService {
     PasswordResponse decodePassword(Long passwordId) throws Exception;
     void deletePassword(Long passwordId) throws Exception;
     void onChangeUserPassword(String oldWalletPassword, User newUser) throws Exception;
+    List<WalletPasswordDTO> getSharedPasswordsForCurrentUser();
     SharePasswordResponse sharePassword(Long passwordId, String userEmail) throws NotFoundException;
     void deleteUserFromSharedPassword(Long passwordId, Long userId) throws NotFoundException;
 }

@@ -18,5 +18,6 @@ public class WalletPasswordDTO implements Serializable {
     private String login;
     private String description;
     private String password;
+    private Long ownerId;
     private List<SharedUserDTO> sharedUsers;
 }

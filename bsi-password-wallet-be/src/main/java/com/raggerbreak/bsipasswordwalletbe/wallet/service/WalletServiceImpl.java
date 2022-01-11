@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet.service;
 
+import com.raggerbreak.bsipasswordwalletbe.exceptions.WalletPasswordException;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
@@ -45,21 +46,35 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public PasswordResponse decodePassword(Long passwordId) throws Exception {
         User user = userService.getCurrentAuthUser();
-        WalletPassword walletPassword = walletPasswordRepository.findByIdAndUserId(passwordId, user.getId())
+        WalletPasswordDTO walletPasswordDTO = walletPasswordRepository.findById(passwordId)
+                .map(walletPasswordMapper::walletPasswordToDTO)
                 .orElseThrow(() -> new NotFoundException("Password Not Found"));
 
-        return PasswordResponse.builder()
-                .password(cryptoService.decrypt(walletPassword.getPassword(), user.getWalletPassword()))
-                .build();
+        if (walletPasswordDTO.getOwnerId().equals(user.getId()) || walletPasswordDTO.getSharedUsers()
+                .stream().anyMatch(f -> f.getId().equals(user.getId()))) {
+            return PasswordResponse.builder()
+                    .password(cryptoService.decrypt(walletPasswordDTO.getPassword(), user.getWalletPassword()))
+                    .build();
+
+        } else {
+            throw new WalletPasswordException("You have to be an owner or shared user to decode password");
+        }
     }
 
     @Override
     public void deletePassword(Long passwordId) throws Exception {
         User user = userService.getCurrentAuthUser();
-        WalletPassword walletPassword = walletPasswordRepository.findByIdAndUserId(passwordId, user.getId())
+
+        WalletPasswordDTO walletPasswordDTO = walletPasswordRepository.findById(passwordId)
+                .map(walletPasswordMapper::walletPasswordToDTO)
                 .orElseThrow(() -> new NotFoundException("Password Not Found"));
 
-        walletPasswordRepository.deleteById(passwordId);
+        if (walletPasswordDTO.getOwnerId().equals(user.getId())) {
+            walletPasswordRepository.deleteById(passwordId);
+        } else {
+            throw new WalletPasswordException("You have to be an owner to delete password");
+        }
+
     }
 
     @Override
@@ -72,6 +87,14 @@ public class WalletServiceImpl implements WalletService {
             passwd.setPassword(cryptoService.encrypt(plainPassword, user.getWalletPassword()));
             walletPasswordRepository.save(passwd);
         }
+    }
+
+    @Override
+    public List<WalletPasswordDTO> getSharedPasswordsForCurrentUser() {
+        User currentUser = userService.getCurrentAuthUser();
+        return walletPasswordRepository.findAllBySharedUsers(currentUser).stream()
+                .map(walletPasswordMapper::walletPasswordToDTOWithoutSharedUsers)
+                .collect(Collectors.toList());
     }
 
     @Override

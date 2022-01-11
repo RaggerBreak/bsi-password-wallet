@@ -50,6 +50,12 @@ public class WalletController {
     }
 
     @PreAuthorize("hasRole('USER')")
+    @GetMapping("/password/share")
+    public List<WalletPasswordDTO> getSharedPasswordsForUser(Principal principal) {
+        return walletService.getSharedPasswordsForCurrentUser();
+    }
+
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/password/share/{passwordId}/{userEmail}")
     public SharePasswordResponse sharePassword(@PathVariable Long passwordId, @PathVariable String userEmail) throws Exception {
         return walletService.sharePassword(passwordId, userEmail);
