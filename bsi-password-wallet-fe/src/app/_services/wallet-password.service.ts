@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {WalletPassword} from "../_common/wallet-password";
 
@@ -35,6 +35,14 @@ export class WalletPasswordService {
       description,
       password
     }, httpOptions);
+  }
+
+  deleteUserFromSharedPassword(passwordId: number, userId: number) {
+    return this.httpClient.delete(API_URL + `password/share/${passwordId}/${userId}`);
+  }
+
+  sharePassword(passwordId: number, userEmail: string): Observable<any> {
+    return this.httpClient.post(API_URL + `password/share/${passwordId}/${userEmail}`, httpOptions);
   }
 }
 

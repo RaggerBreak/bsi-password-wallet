@@ -41,6 +41,7 @@ export class PasswordListComponent implements OnInit {
 
     this.walletPasswordService.getRawPassword(passwordId).subscribe(data => {
       modalRef.componentInstance.password = data.password;
+      modalRef.componentInstance.passwordId = passwordId;
     });
   }
 
@@ -57,6 +58,11 @@ export class PasswordListComponent implements OnInit {
     })
   }
 
+  onClickDeleteUserFromSharedPassword(passwordId: number, userId: number): void {
+    this.walletPasswordService.deleteUserFromSharedPassword(passwordId, userId).subscribe((result) => {
+      this.ngOnInit();
+    });
+  }
 }
 
 @Component({
@@ -70,14 +76,49 @@ export class PasswordListComponent implements OnInit {
     </div>
     <div class="modal-body">
       <p>{{password}}</p>
+      <hr>
+      <h6>Share password</h6>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">@</span>
+        <input type="email" class="form-control" placeholder="e-mail@example.com" aria-label="userEmail"
+               aria-describedby="basic-addon1" required minlength="1"
+               [(ngModel)]="formSharePassword.userEmail" #userEmail="ngModel"/>
+        <button type="button" class="btn btn-outline-dark " (click)="onClickShare()">
+          <i class="fas fa-share-alt"></i>
+        </button>
+      </div>
+      <div class="alert alert-danger" role="alert" *ngIf="isError">
+        {{errorMessage}}
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
     </div>
   `
 })
-export class NgbdModalContent {
-  @Input() password;
+export class NgbdModalContent implements OnInit{
+  @Input() password: string;
+  @Input() passwordId: number;
+  formSharePassword: any = {
+    userEmail: null
+  };
 
-  constructor(public activeModal: NgbActiveModal) {}
+  errorMessage = '';
+  isError: boolean = false;
+
+  constructor(public activeModal: NgbActiveModal, private walletPasswordService: WalletPasswordService) {}
+
+  ngOnInit(): void {
+        this.isError = false;
+    }
+
+  onClickShare() {
+    this.walletPasswordService.sharePassword(this.passwordId, this.formSharePassword.userEmail).subscribe(data => {
+      this.activeModal.close('Close click');
+      location.reload();
+    }, err => {
+      this.errorMessage = err.error.message;
+      this.isError = true;
+    });
+  }
 }
