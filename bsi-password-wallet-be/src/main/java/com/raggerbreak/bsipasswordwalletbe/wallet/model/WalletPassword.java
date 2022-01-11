@@ -1,10 +1,7 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet.model;
 
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +9,8 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 public class WalletPassword {

@@ -1,10 +1,7 @@
 package com.raggerbreak.bsipasswordwalletbe.security.model;
 
 import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -16,7 +13,8 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 public class User {
@@ -57,6 +55,9 @@ public class User {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany(mappedBy = "sharedUsers")
+    Set<WalletPassword> sharedPasswords;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<WalletPassword> walletPasswords = new HashSet<>();
