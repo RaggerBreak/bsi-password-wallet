@@ -32,6 +32,7 @@ public class User {
     @NotBlank
     @Size(max = 50)
     @Email
+    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -58,5 +59,5 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<WalletPassword> walletPasswords;
+    private Set<WalletPassword> walletPasswords = new HashSet<>();
 }

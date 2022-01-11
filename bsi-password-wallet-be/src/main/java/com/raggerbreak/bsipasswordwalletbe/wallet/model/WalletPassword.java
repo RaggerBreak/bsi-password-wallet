@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,5 +29,12 @@ public class WalletPassword {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "shared_user_to_shared_password",
+            joinColumns = @JoinColumn(name = "shared_password_id"),
+            inverseJoinColumns = @JoinColumn(name = "shared_user_id"))
+    private Set<User> sharedUsers = new HashSet<>();
+
 
 }

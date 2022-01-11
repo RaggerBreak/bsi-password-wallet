@@ -4,7 +4,10 @@ import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
 import com.raggerbreak.bsipasswordwalletbe.wallet.service.WalletService;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.CreatePasswordResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.PasswordResponse;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.SharePasswordResponse;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +47,18 @@ public class WalletController {
     @DeleteMapping("/password/{passwordId}")
     public void deletePassword(@PathVariable Long passwordId) throws Exception {
          walletService.deletePassword(passwordId);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/password/share/{passwordId}/{userEmail}")
+    public SharePasswordResponse sharePassword(@PathVariable Long passwordId, @PathVariable String userEmail) throws Exception {
+        return walletService.sharePassword(passwordId, userEmail);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/password/share/{passwordId}/{userId}")
+    public void deleteUserFromSharedPassword(@PathVariable Long passwordId, @PathVariable Long userId) throws NotFoundException {
+        walletService.deleteUserFromSharedPassword(passwordId, userId);
     }
 }

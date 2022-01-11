@@ -2,6 +2,7 @@ package com.raggerbreak.bsipasswordwalletbe.exceptions.controller;
 
 import com.raggerbreak.bsipasswordwalletbe.exceptions.ErrorResponse;
 import com.raggerbreak.bsipasswordwalletbe.exceptions.IpLockedException;
+import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -19,5 +20,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IpLockedException.class)
     public ResponseEntity<ErrorResponse> handleIpLockedException(IpLockedException exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public static ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exception) {
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

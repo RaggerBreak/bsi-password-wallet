@@ -3,6 +3,7 @@ package com.raggerbreak.bsipasswordwalletbe.wallet.dto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class WalletPasswordDTO implements Serializable {
     private String login;
     private String description;
     private String password;
+    private List<SharedUserDTO> sharedUsers;
 }

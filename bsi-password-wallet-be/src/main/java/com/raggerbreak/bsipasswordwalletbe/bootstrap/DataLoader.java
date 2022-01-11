@@ -55,6 +55,32 @@ public class DataLoader implements CommandLineRunner {
         user.setWalletPassword(PasswordUtils.encode(user));
         userRepository.save(user);
 
+        User user2 = User.builder()
+                .username("user2")
+                .email("user2@email.com")
+                .password(passwordEncoder.encode("123456"))
+                .passwordForm(PasswordForm.SHA512)
+                .salt(BCrypt.gensalt())
+                .roles(roles)
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
+                .build();
+        user2.setWalletPassword(PasswordUtils.encode(user));
+        userRepository.save(user2);
+
+        User user3 = User.builder()
+                .username("user3")
+                .email("user3@email.com")
+                .password(passwordEncoder.encode("123456"))
+                .passwordForm(PasswordForm.SHA512)
+                .salt(BCrypt.gensalt())
+                .roles(roles)
+                .numberOfFailedLoginAttempts(0)
+                .locked(false)
+                .build();
+        user3.setWalletPassword(PasswordUtils.encode(user));
+        userRepository.save(user3);
+
         roles = new HashSet<>();
         roles.add(roleRepository.findByName(ERole.ROLE_ADMIN).orElse(null));
         User admin = User.builder()
