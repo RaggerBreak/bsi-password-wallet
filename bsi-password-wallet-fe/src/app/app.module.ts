@@ -17,6 +17,7 @@ import {NgbdModalContent, PasswordListComponent} from './_components/password-li
 import {MatDialogModule} from "@angular/material/dialog";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { AlertComponent } from './_components/modals/alert/alert.component';
+import { UpdatePasswordComponent } from './_components/modals/update-password/update-password.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AlertComponent } from './_components/modals/alert/alert.component';
     RegisterComponent,
     PasswordListComponent,
     NgbdModalContent,
-    AlertComponent
+    AlertComponent,
+    UpdatePasswordComponent
   ],
   imports: [
     BrowserModule,

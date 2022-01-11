@@ -3,6 +3,7 @@ import {WalletPassword} from "../../_common/wallet-password";
 import {WalletPasswordService} from "../../_services/wallet-password.service";
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AlertComponent} from "../modals/alert/alert.component";
+import {UpdatePasswordComponent} from "../modals/update-password/update-password.component";
 
 @Component({
   selector: 'app-password-list',
@@ -102,6 +103,11 @@ export class PasswordListComponent implements OnInit {
     const modalRef = this.modalService.open(AlertComponent);
     modalRef.componentInstance.title = "Error";
     modalRef.componentInstance.content = this.errorMessage;
+  }
+
+  onClickUpdatePassword(walletPassword: WalletPassword) {
+    const modalRef = this.modalService.open(UpdatePasswordComponent);
+    modalRef.componentInstance.walletPassword = walletPassword;
   }
 }
 

@@ -48,6 +48,16 @@ export class WalletPasswordService {
   sharePassword(passwordId: number, userEmail: string): Observable<any> {
     return this.httpClient.post(API_URL + `password/share/${passwordId}/${userEmail}`, httpOptions);
   }
+
+  updatePassword(passwordId: number, name: string, login: string, description: string, oldPassword: string, newPassword: string): Observable<any>  {
+    return this.httpClient.put(API_URL + `password/${passwordId}`, {
+      name,
+      login,
+      description,
+      oldPassword,
+      newPassword
+    }, httpOptions);
+  }
 }
 
 interface PasswordResponse {
