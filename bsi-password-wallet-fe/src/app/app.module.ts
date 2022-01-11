@@ -16,6 +16,7 @@ import { authInterceptorProviders } from './_helpers/auth-interceptor';
 import {NgbdModalContent, PasswordListComponent} from './_components/password-list/password-list.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import { AlertComponent } from './_components/modals/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
     ProfileComponent,
     RegisterComponent,
     PasswordListComponent,
-    NgbdModalContent
+    NgbdModalContent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,

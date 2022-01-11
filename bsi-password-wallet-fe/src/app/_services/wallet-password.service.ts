@@ -20,6 +20,10 @@ export class WalletPasswordService {
     return this.httpClient.get<WalletPassword[]>(API_URL);
   }
 
+  getSharedPasswords(): Observable<WalletPassword[]> {
+    return this.httpClient.get<WalletPassword[]>(API_URL + 'password/share');
+  }
+
   getRawPassword(passwordId: number): Observable<PasswordResponse> {
     return this.httpClient.get<PasswordResponse>(API_URL + `password/${passwordId}`)
   }
