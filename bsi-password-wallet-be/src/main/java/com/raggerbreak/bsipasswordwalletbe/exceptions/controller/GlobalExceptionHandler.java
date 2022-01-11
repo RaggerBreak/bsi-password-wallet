@@ -2,6 +2,7 @@ package com.raggerbreak.bsipasswordwalletbe.exceptions.controller;
 
 import com.raggerbreak.bsipasswordwalletbe.exceptions.ErrorResponse;
 import com.raggerbreak.bsipasswordwalletbe.exceptions.IpLockedException;
+import com.raggerbreak.bsipasswordwalletbe.exceptions.PasswordAuthorizationException;
 import com.raggerbreak.bsipasswordwalletbe.exceptions.WalletPasswordException;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizedException(AuthenticationException exception) {
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(PasswordAuthorizationException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(PasswordAuthorizationException exception) {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 

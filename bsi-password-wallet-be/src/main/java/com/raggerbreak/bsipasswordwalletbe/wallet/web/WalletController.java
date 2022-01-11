@@ -2,9 +2,11 @@ package com.raggerbreak.bsipasswordwalletbe.wallet.web;
 
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
 import com.raggerbreak.bsipasswordwalletbe.wallet.service.WalletService;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.request.UpdatePasswordRequest;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.CreatePasswordResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.PasswordResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.SharePasswordResponse;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.UpdatePasswordResponse;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,14 @@ public class WalletController {
     public CreatePasswordResponse addWalletPassword(@Valid @RequestBody WalletPasswordDTO walletPasswordDTO) throws Exception  {
         return CreatePasswordResponse.builder()
                 .walletPasswordId(walletService.addPassword(walletPasswordDTO).getId())
+                .build();
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/password/{passwordId}")
+    public UpdatePasswordResponse updateWalletPassword(@PathVariable Long passwordId, @Valid @RequestBody UpdatePasswordRequest request) throws Exception  {
+        return UpdatePasswordResponse.builder()
+                .walletPasswordId(walletService.updatePassword(passwordId, request).getId())
                 .build();
     }
 

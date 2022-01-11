@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.wallet.service;
 
+import com.raggerbreak.bsipasswordwalletbe.exceptions.PasswordAuthorizationException;
 import com.raggerbreak.bsipasswordwalletbe.exceptions.WalletPasswordException;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
@@ -7,6 +8,7 @@ import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
 import com.raggerbreak.bsipasswordwalletbe.wallet.mapper.WalletPasswordMapper;
 import com.raggerbreak.bsipasswordwalletbe.wallet.model.WalletPassword;
 import com.raggerbreak.bsipasswordwalletbe.wallet.repository.WalletPasswordRepository;
+import com.raggerbreak.bsipasswordwalletbe.wallet.web.request.UpdatePasswordRequest;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.PasswordResponse;
 import com.raggerbreak.bsipasswordwalletbe.wallet.web.response.SharePasswordResponse;
 import javassist.NotFoundException;
@@ -44,6 +46,29 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public WalletPassword updatePassword(Long passwordId, UpdatePasswordRequest request) throws Exception {
+        User currentUser = userService.getCurrentAuthUser();
+        WalletPassword returnedPassword = walletPasswordRepository.findById(passwordId)
+                .orElseThrow(() -> new NotFoundException("Password Not Found"));
+
+        if (!returnedPassword.getUser().getId().equals(currentUser.getId())) {
+            throw new PasswordAuthorizationException("You have to be an owner to update password");
+        }
+
+        String decryptedPassword = cryptoService.decrypt(returnedPassword.getPassword(), currentUser.getWalletPassword());
+        if (!decryptedPassword.equals(request.getOldPassword())) {
+            throw new WalletPasswordException("Your old password and confirmation password do not match");
+        }
+
+        returnedPassword.setName(request.getName());
+        returnedPassword.setLogin(request.getLogin());
+        returnedPassword.setDescription(request.getDescription());
+        returnedPassword.setPassword(cryptoService.encrypt(request.getNewPassword(), userService.getCurrentAuthUser().getWalletPassword()));
+        return walletPasswordRepository.save(returnedPassword);
+
+    }
+
+    @Override
     public PasswordResponse decodePassword(Long passwordId) throws Exception {
         User user = userService.getCurrentAuthUser();
         WalletPasswordDTO walletPasswordDTO = walletPasswordRepository.findById(passwordId)
@@ -57,7 +82,7 @@ public class WalletServiceImpl implements WalletService {
                     .build();
 
         } else {
-            throw new WalletPasswordException("You have to be an owner or shared user to decode password");
+            throw new PasswordAuthorizationException("You have to be an owner or shared user to decode password");
         }
     }
 
@@ -72,7 +97,7 @@ public class WalletServiceImpl implements WalletService {
         if (walletPasswordDTO.getOwnerId().equals(user.getId())) {
             walletPasswordRepository.deleteById(passwordId);
         } else {
-            throw new WalletPasswordException("You have to be an owner to delete password");
+            throw new PasswordAuthorizationException("You have to be an owner to delete password");
         }
 
     }
