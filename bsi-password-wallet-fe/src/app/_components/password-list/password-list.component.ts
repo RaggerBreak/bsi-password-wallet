@@ -1,9 +1,11 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {WalletPassword} from "../../_common/wallet-password";
 import {WalletPasswordService} from "../../_services/wallet-password.service";
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AlertComponent} from "../modals/alert/alert.component";
 import {UpdatePasswordComponent} from "../modals/update-password/update-password.component";
+import {PasswordAccessMode} from "../../_common/password-access-mode";
+import {UserService} from "../../_services/user.service";
 
 @Component({
   selector: 'app-password-list',
@@ -25,7 +27,11 @@ export class PasswordListComponent implements OnInit {
   walletPasswords: WalletPassword[] = [];
   sharedPasswords: WalletPassword[] = [];
 
-  constructor(private walletPasswordService: WalletPasswordService, private modalService: NgbModal) {
+  passwordAccessMode: PasswordAccessMode;
+
+  constructor(private walletPasswordService: WalletPasswordService,
+              private modalService: NgbModal,
+              private userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -37,6 +43,9 @@ export class PasswordListComponent implements OnInit {
     this.formNewPassword.login = null;
     this.formNewPassword.description = null;
     this.formNewPassword.password = null;
+    this.userService.getAccessMode().subscribe(data => {
+      this.passwordAccessMode = data;
+    });
   }
 
   listWalletPasswords(): void {
@@ -106,8 +115,14 @@ export class PasswordListComponent implements OnInit {
   }
 
   onClickUpdatePassword(walletPassword: WalletPassword) {
-    const modalRef = this.modalService.open(UpdatePasswordComponent);
-    modalRef.componentInstance.walletPassword = walletPassword;
+    if (this.passwordAccessMode === PasswordAccessMode.READ) {
+      this.errorMessage = "You have to switch to the modify mode to update password";
+      this.isError = true;
+      this.showErrorAlert();
+    } else {
+      const modalRef = this.modalService.open(UpdatePasswordComponent);
+      modalRef.componentInstance.walletPassword = walletPassword;
+    }
   }
 }
 

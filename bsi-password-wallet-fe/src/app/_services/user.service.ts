@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {LastLoginAttemptsLogs} from "../_common/last-login-attempts-logs";
 import {IpAddressLock} from "../_common/ip-address-lock";
-
+import {PasswordAccessMode} from "../_common/password-access-mode";
 
 const API_URL = 'http://localhost:8080/api/board/';
 const API_URL_USER = 'http://localhost:8080/api/user/';
@@ -50,5 +50,13 @@ export class UserService {
 
   deletePermanentlyLockedIp(addressLockId: number) {
     return this.httpClient.delete(API_URL_LOGIN_ATTEMPT + `/permanentlyLockedIp/${addressLockId}`);
+  }
+
+  getAccessMode(): Observable<any> {
+    return this.httpClient.get(API_URL_USER + `password/accessMode/`);
+  }
+
+  changePasswordAccessMode(passwordAccessMode: PasswordAccessMode): Observable<any> {
+    return this.httpClient.post(API_URL_USER + `password/accessMode/${passwordAccessMode}`, httpOptions);
   }
 }

@@ -3,7 +3,7 @@ import {TokenStorageService} from "../../_services/token-storage.service";
 import {UserService} from "../../_services/user.service";
 import {LastLoginAttemptsLogs} from "../../_common/last-login-attempts-logs";
 import {IpAddressLock} from "../../_common/ip-address-lock";
-import {NgbdModalContent} from "../password-list/password-list.component";
+import {PasswordAccessMode} from "../../_common/password-access-mode";
 
 @Component({
   selector: 'app-profile',
@@ -22,6 +22,8 @@ export class ProfileComponent implements OnInit {
   lastLoginAttemptsLogs: LastLoginAttemptsLogs;
   permanentlyLockedIps: IpAddressLock[];
 
+  passwordAccessMode: PasswordAccessMode;
+
   constructor(private token: TokenStorageService, private userService: UserService) { }
 
   ngOnInit(): void {
@@ -29,6 +31,10 @@ export class ProfileComponent implements OnInit {
     this.formChangePassword.oldPassword = null;
     this.formChangePassword.newPassword = null;
     this.formChangePassword.passwordForm = null;
+
+    this.userService.getAccessMode().subscribe(data => {
+      this.passwordAccessMode = data;
+    });
 
     this.userService.getLastLoginAttemptsLogs().subscribe(data => {
       this.lastLoginAttemptsLogs = data;
@@ -48,6 +54,12 @@ export class ProfileComponent implements OnInit {
 
   onClickDeletePermanentlyLockedIp(addressLockId: number): void {
     this.userService.deletePermanentlyLockedIp(addressLockId).subscribe((result) => {
+      this.ngOnInit();
+    });
+  }
+
+  onClickChangePasswordAccessMode(passwordAccessMode: PasswordAccessMode) {
+    this.userService.changePasswordAccessMode(passwordAccessMode).subscribe((result) => {
       this.ngOnInit();
     });
   }

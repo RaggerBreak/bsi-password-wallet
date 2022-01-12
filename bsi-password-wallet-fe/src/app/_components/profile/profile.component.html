@@ -19,6 +19,14 @@
       {{ role }}
     </li>
   </ul>
+
+  <div>
+    <strong>Password Access Mode:</strong>
+    {{passwordAccessMode}}
+  </div>
+  <button (click)="onClickChangePasswordAccessMode('READ')" type="button" class="btn btn-outline-success btn-sm">READ</button>
+  <button (click)="onClickChangePasswordAccessMode('MODIFY')"  class="btn btn-outline-warning btn-sm">MODIFY</button>
+
 </div>
 
 <br><h3>Change password</h3><br>
@@ -65,14 +73,22 @@
   <tbody>
   <tr>
     <td>
-      <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.ip }}
+      <span *ngIf="lastLoginAttemptsLogs.lastSuccessfulLoginAttempt != null">
+        <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.ip }}
+      </span>
     <br>
-      <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.timestamp }}
+      <span *ngIf="lastLoginAttemptsLogs.lastSuccessfulLoginAttempt != null">
+        <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastSuccessfulLoginAttempt.timestamp }}
+      </span>
     </td>
     <td>
-      <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.ip }}
-      <br>
-      <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.timestamp }}
+      <span *ngIf="lastLoginAttemptsLogs.lastFailedLoginAttempt != null">
+        <strong>IP:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.ip }}
+        <br>
+    </span>
+      <span *ngIf="lastLoginAttemptsLogs.lastFailedLoginAttempt != null">
+        <strong>timestamp:</strong> {{ lastLoginAttemptsLogs.lastFailedLoginAttempt.timestamp }}
+      </span>
     </td>
   </tr>
   </tbody>
