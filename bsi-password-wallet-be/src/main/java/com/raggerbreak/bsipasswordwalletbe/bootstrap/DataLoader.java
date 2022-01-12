@@ -1,9 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.bootstrap;
 
-import com.raggerbreak.bsipasswordwalletbe.security.model.ERole;
-import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordForm;
-import com.raggerbreak.bsipasswordwalletbe.security.model.Role;
-import com.raggerbreak.bsipasswordwalletbe.security.model.User;
+import com.raggerbreak.bsipasswordwalletbe.security.model.*;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.RoleRepository;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
 import com.raggerbreak.bsipasswordwalletbe.wallet.PasswordUtils;
@@ -51,6 +48,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
         user.setWalletPassword(PasswordUtils.encode(user));
         userRepository.save(user);
@@ -64,6 +62,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
         user2.setWalletPassword(PasswordUtils.encode(user));
         userRepository.save(user2);
@@ -77,6 +76,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
         user3.setWalletPassword(PasswordUtils.encode(user));
         userRepository.save(user3);
@@ -92,6 +92,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
         admin.setWalletPassword(PasswordUtils.encode(admin));
         userRepository.save(admin);
@@ -108,6 +109,7 @@ public class DataLoader implements CommandLineRunner {
                 .roles(roles)
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
         all.setWalletPassword(PasswordUtils.encode(all));
         userRepository.save(all);

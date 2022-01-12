@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.service;
 
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordAccessMode;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.UserRepository;
 import com.raggerbreak.bsipasswordwalletbe.security.web.request.ChangeUserPasswordRequest;
@@ -133,6 +134,18 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public PasswordAccessMode changeAccessMode(PasswordAccessMode accessMode) {
+        User user = getCurrentAuthUser();
+        user.setPasswordAccessMode(accessMode);
+        return userRepository.save(user).getPasswordAccessMode();
+    }
+
+    @Override
+    public PasswordAccessMode getAccessMode() {
+        return getCurrentAuthUser().getPasswordAccessMode();
     }
 
     private User getUserByUsername(String username) {

@@ -1,5 +1,6 @@
 package com.raggerbreak.bsipasswordwalletbe.security.web;
 
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordAccessMode;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
 import com.raggerbreak.bsipasswordwalletbe.security.web.request.ChangeUserPasswordRequest;
 import com.raggerbreak.bsipasswordwalletbe.security.web.response.MessageResponse;
@@ -31,6 +32,18 @@ public class UserController {
 
         return ResponseEntity.ok(messageResponse);
 
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/password/accessMode/")
+    public ResponseEntity<PasswordAccessMode> getAccessMode() {
+        return ResponseEntity.ok(userService.getAccessMode());
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/password/accessMode/{accessMode}")
+    public ResponseEntity<PasswordAccessMode> changeAccessMode(@PathVariable PasswordAccessMode accessMode) {
+        return ResponseEntity.ok(userService.changeAccessMode(accessMode));
     }
 }
 

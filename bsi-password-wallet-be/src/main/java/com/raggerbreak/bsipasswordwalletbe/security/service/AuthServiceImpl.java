@@ -3,6 +3,7 @@ package com.raggerbreak.bsipasswordwalletbe.security.service;
 import com.raggerbreak.bsipasswordwalletbe.loginattempts.service.IpAddressLockService;
 import com.raggerbreak.bsipasswordwalletbe.security.jwt.JwtUtils;
 import com.raggerbreak.bsipasswordwalletbe.security.model.ERole;
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordAccessMode;
 import com.raggerbreak.bsipasswordwalletbe.security.model.Role;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.repository.RoleRepository;
@@ -61,6 +62,8 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        userService.changeAccessMode(PasswordAccessMode.READ);
+
         return JwtResponse.builder()
                 .token(jwt)
                 .id(userDetails.getId())
@@ -96,6 +99,7 @@ public class AuthServiceImpl implements AuthService {
                 .salt(BCrypt.gensalt())
                 .numberOfFailedLoginAttempts(0)
                 .locked(false)
+                .passwordAccessMode(PasswordAccessMode.READ)
                 .build();
 
         user.setWalletPassword(PasswordUtils.encode(user));

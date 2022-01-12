@@ -50,6 +50,9 @@ public class User {
 
     private Date lockTime;
 
+    @Enumerated(EnumType.STRING)
+    private PasswordAccessMode passwordAccessMode;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn(name = "user_id"),

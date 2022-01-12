@@ -2,6 +2,7 @@ package com.raggerbreak.bsipasswordwalletbe.wallet.service;
 
 import com.raggerbreak.bsipasswordwalletbe.exceptions.PasswordAuthorizationException;
 import com.raggerbreak.bsipasswordwalletbe.exceptions.WalletPasswordException;
+import com.raggerbreak.bsipasswordwalletbe.security.model.PasswordAccessMode;
 import com.raggerbreak.bsipasswordwalletbe.security.model.User;
 import com.raggerbreak.bsipasswordwalletbe.security.service.UserService;
 import com.raggerbreak.bsipasswordwalletbe.wallet.dto.WalletPasswordDTO;
@@ -51,6 +52,10 @@ public class WalletServiceImpl implements WalletService {
         WalletPassword returnedPassword = walletPasswordRepository.findById(passwordId)
                 .orElseThrow(() -> new NotFoundException("Password Not Found"));
 
+        if (PasswordAccessMode.READ.equals(currentUser.getPasswordAccessMode())) {
+            throw new WalletPasswordException("You have to switch to the modify mode to delete password");
+        }
+
         if (!returnedPassword.getUser().getId().equals(currentUser.getId())) {
             throw new PasswordAuthorizationException("You have to be an owner to update password");
         }
@@ -93,6 +98,10 @@ public class WalletServiceImpl implements WalletService {
         WalletPasswordDTO walletPasswordDTO = walletPasswordRepository.findById(passwordId)
                 .map(walletPasswordMapper::walletPasswordToDTO)
                 .orElseThrow(() -> new NotFoundException("Password Not Found"));
+
+        if (PasswordAccessMode.READ.equals(user.getPasswordAccessMode())) {
+            throw new WalletPasswordException("You have to switch to the modify mode to delete password");
+        }
 
         if (walletPasswordDTO.getOwnerId().equals(user.getId())) {
             walletPasswordRepository.deleteById(passwordId);
