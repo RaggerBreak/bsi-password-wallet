@@ -81,10 +81,10 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
-
     </dependencies>
 
     <build>
+        <finalName>bsi-password-wallet-be</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

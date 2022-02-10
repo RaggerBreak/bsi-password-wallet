@@ -1,0 +1,12 @@
+# Build
+FROM maven:3.8.4-jdk-11-slim AS build
+COPY pom.xml /app/
+COPY src /app/src
+RUN mvn -f /app/pom.xml clean package -DskipTests
+
+# Run
+FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
+EXPOSE 8080
+MAINTAINER ragger.break@gmail.com
+COPY --from=build /app/target/bsi-password-wallet-be.jar /app/app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/app/app.jar"]
